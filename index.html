@@ -204,6 +204,86 @@
       color: #cccccc;
     }
 
+    /* ── 鎖定畫面 ── */
+    .lock-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      gap: 20px;
+      user-select: none;
+    }
+
+    .lock-icon {
+      font-size: 2rem;
+      color: #444444;
+      letter-spacing: 4px;
+    }
+
+    .lock-label {
+      font-size: 0.72rem;
+      color: #555555;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+
+    .lock-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .lock-input {
+      background: #1a1a1a;
+      border: 1px solid #333333;
+      border-radius: 2px;
+      color: #cccccc;
+      font-family: monospace;
+      font-size: 1rem;
+      letter-spacing: 4px;
+      padding: 8px 14px;
+      width: 180px;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.15s;
+    }
+
+    .lock-input:focus {
+      border-color: #666666;
+    }
+
+    .lock-input.error {
+      border-color: #7a2020;
+      animation: shake 0.25s ease;
+    }
+
+    .lock-submit {
+      background: none;
+      border: 1px solid #444444;
+      border-radius: 2px;
+      color: #888888;
+      font-family: monospace;
+      font-size: 0.8rem;
+      padding: 8px 14px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .lock-submit:hover {
+      color: #ffffff;
+      border-color: #888888;
+    }
+
+    @keyframes shake {
+      0%   { transform: translateX(0); }
+      25%  { transform: translateX(-6px); }
+      75%  { transform: translateX(6px); }
+      100% { transform: translateX(0); }
+    }
+
     .doc-body p {
       margin-bottom: 16px;
     }
@@ -441,6 +521,8 @@
         title: "作戰報告：代號【斷角】",
         meta: "RECORD ID: LOG-202603-01 | TARGET: UNKNOWN-BEAST",
         clearance: 3,
+        locked: true,
+        password: "10340103",
         content: `
           <p><strong>【目標概述】</strong><br>出現於廢棄礦區的未編號實體，具備震波破壞力與極強防禦。</p>
           <p><strong>【執行過程】</strong><br>03:00 投放滅行者。目標發動首輪衝擊，滅行者抵禦動能後突進，精準刺入目標頸部中樞。</p>
@@ -541,8 +623,8 @@
     });
 
     // 切換文件（含淡入淡出）
-    function showDoc(key, element) {
-      if (key === currentKey) return;
+    function showDoc(key, element, skipLock = false) {
+      if (key === currentKey && !skipLock) return;
       const item = database[key];
       if (!item) return;
 
@@ -551,20 +633,67 @@
 
       setTimeout(() => {
         currentKey = key;
-        card.innerHTML = `
-          <h2>${item.title}</h2>
-          <div class="doc-meta">
-            <span>${item.meta}</span>
-            <span class="clearance-badge clearance-${item.clearance}">CLEARANCE LEVEL-${item.clearance}</span>
-          </div>
-          <div class="doc-body">${item.content}</div>
-        `;
         contentArea.scrollTop = 0;
         progressBar.style.width = "0%";
-        card.classList.remove("fade-out");
 
-        document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
-        if (element) element.classList.add("active");
+        // 鎖定文件：顯示密碼畫面
+        if (item.locked && !skipLock) {
+          card.innerHTML = `
+            <div class="lock-screen">
+              <div class="lock-icon">▓ ▓ ▓</div>
+              <div class="lock-label">此文件存取受限 — 請輸入授權密碼</div>
+              <div class="lock-input-row">
+                <input
+                  class="lock-input"
+                  id="lock-input"
+                  type="password"
+                  maxlength="32"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button class="lock-submit" id="lock-submit">CONFIRM</button>
+              </div>
+            </div>
+          `;
+          card.classList.remove("fade-out");
+
+          const input = document.getElementById("lock-input");
+          const submit = document.getElementById("lock-submit");
+          input.focus();
+
+          function tryUnlock() {
+            if (input.value === item.password) {
+              showDoc(key, element, true);
+            } else {
+              input.value = "";
+              input.classList.remove("error");
+              void input.offsetWidth; // 重新觸發動畫
+              input.classList.add("error");
+              setTimeout(() => input.classList.remove("error"), 300);
+              input.focus();
+            }
+          }
+
+          submit.addEventListener("click", tryUnlock);
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") tryUnlock();
+          });
+
+        } else {
+          // 正常顯示文件
+          card.innerHTML = `
+            <h2>${item.title}</h2>
+            <div class="doc-meta">
+              <span>${item.meta}</span>
+              <span class="clearance-badge clearance-${item.clearance}">CLEARANCE LEVEL-${item.clearance}</span>
+            </div>
+            <div class="doc-body">${item.content}</div>
+          `;
+          card.classList.remove("fade-out");
+
+          document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+          if (element) element.classList.add("active");
+        }
       }, 160);
     }
 
