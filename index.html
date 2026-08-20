@@ -161,6 +161,49 @@
       letter-spacing: 2px;
     }
 
+    /* 對話記錄 */
+    .log-header {
+      font-size: 0.78rem;
+      color: #555555;
+      font-family: monospace;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #2a2a2a;
+      letter-spacing: 0.5px;
+    }
+
+    .dialogue {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      font-family: monospace;
+    }
+
+    .dialogue-line {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 12px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      padding: 8px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .dialogue-line:last-child {
+      border-bottom: none;
+    }
+
+    .dialogue-speaker {
+      color: #555555;
+      font-size: 0.78rem;
+      padding-top: 2px;
+      white-space: nowrap;
+    }
+
+    .dialogue-text {
+      color: #cccccc;
+    }
+
     .doc-body p {
       margin-bottom: 16px;
     }
@@ -330,6 +373,13 @@
         </ul>
       </div>
 
+      <div class="sidebar-section">
+        <div class="category-title">內部通訊截錄</div>
+        <ul>
+          <li data-doc="log01">實驗室對話 — 逃脫評估</li>
+        </ul>
+      </div>
+
     </aside>
   </div>
 
@@ -399,6 +449,44 @@
           <p>傳統神話記載之概念型異獸（如饕餮等吞噬類生物）對常規物理打擊具備極高抗性。</p>
           <p><strong>D.M.S 處置策略：</strong>投放擬態黑潮作為誘餌。利用目標之吞噬本能使其吞入反物質核心，自其體內核心引發概念崩解，達成零殘留殲滅。</p>
           <p>預計損耗評估：擬態黑潮樣本 <span class="redact">██</span> 號將於任務中自毀，無需回收程序。</p>
+        `
+      },
+      log01: {
+        title: "內部通訊截錄 — 逃脫風險評估",
+        meta: "LOG ID: COMMS-202608-03 | SOURCE: 實驗區 B 監控頻道",
+        clearance: 3,
+        content: `
+          <div class="log-header">
+            ▌ 以下為實驗區 B 內部語音通訊自動轉錄紀錄<br>
+            ▌ 說話者身份已依保密協議抹除 / 部分關鍵詞彙已遮蔽<br>
+            ▌ 轉錄時間：<span class="redact">████-██-██</span> 02:41–02:43
+          </div>
+          <div class="dialogue">
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text">你覺得<span class="redact">████</span>會逃出來嗎？</span>
+            </div>
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text">不太可能吧。</span>
+            </div>
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text">他的能量很強耶。</span>
+            </div>
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text">但也不至於阿！</span>
+            </div>
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text"><span class="redact">████</span>也說是有可能的。</span>
+            </div>
+            <div class="dialogue-line">
+              <span class="dialogue-speaker">實驗人員 <span class="redact">██████</span></span>
+              <span class="dialogue-text">去看看就知道了。</span>
+            </div>
+          </div>
         `
       }
     };
