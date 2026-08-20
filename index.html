@@ -3,86 +3,283 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D.M.S 機密檔案庫</title>
-  
-  <!-- CSS：負責終端機黑底綠字與科技感外觀 -->
+  <title>D.M.S // 異象殲滅資料庫</title>
   <style>
-    body {
-      background-color: #0d1117;
-      color: #00ff66;
-      font-family: 'Courier New', Courier, monospace;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
     }
-    .container {
-      max-width: 600px;
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 機密頂部狀態列 */
+    header {
+      background-color: #181818;
+      border-bottom: 1px solid #333333;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .status-tag {
+      font-size: 0.75rem;
+      color: #888888;
+      border: 1px solid #444444;
+      padding: 2px 8px;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+
+    /* 左右雙欄佈局 */
+    .layout-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 53px);
+    }
+
+    /* 左側：主檔案閱讀區 */
+    .content-area {
+      flex: 7;
+      padding: 40px;
+      overflow-y: auto;
+      background-color: #121212;
+      border-right: 1px solid #2a2a2a;
+    }
+
+    .doc-card {
+      max-width: 780px;
       margin: 0 auto;
-      border: 1px solid #00ff66;
-      padding: 20px;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+      line-height: 1.8;
+      color: #cccccc;
     }
-    h1 {
-      font-size: 1.4rem;
-      border-bottom: 1px dashed #00ff66;
-      padding-bottom: 10px;
+
+    .doc-card h2 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #333333;
+    }
+
+    .doc-meta {
+      font-size: 0.85rem;
+      color: #777777;
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      font-family: monospace;
+    }
+
+    .doc-body p {
+      margin-bottom: 16px;
+    }
+
+    .doc-body strong {
+      color: #ffffff;
+    }
+
+    /* 右側：分類目錄選單 */
+    .sidebar {
+      flex: 3;
+      min-width: 260px;
+      background-color: #161616;
+      padding: 24px 16px;
+      overflow-y: auto;
+    }
+
+    .category-title {
+      font-size: 0.75rem;
+      color: #666666;
       text-transform: uppercase;
-    }
-    .warning {
-      color: #ff3333;
-      font-weight: bold;
-    }
-    button {
-      background: transparent;
-      border: 1px solid #00ff66;
-      color: #00ff66;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-family: inherit;
-      margin-top: 15px;
-      width: 100%;
-    }
-    button:hover {
-      background: #00ff66;
-      color: #000;
-    }
-    #secret-file {
-      display: none;
+      letter-spacing: 1.5px;
       margin-top: 20px;
-      padding: 10px;
-      background: #161b22;
-      border-left: 3px solid #ff3333;
+      margin-bottom: 10px;
+      padding-left: 8px;
+      font-weight: 600;
+    }
+
+    .category-title:first-child {
+      margin-top: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: #aaaaaa;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .sidebar li:hover {
+      background-color: #222222;
+      color: #ffffff;
+    }
+
+    .sidebar li.active {
+      background-color: #242424;
+      color: #ffffff;
+      border: 1px solid #444444;
+      font-weight: 500;
+    }
+
+    /* 行動裝置適配 */
+    @media (max-width: 768px) {
+      .layout-container {
+        flex-direction: column-reverse;
+      }
+      .sidebar {
+        flex: none;
+        height: 35%;
+        border-top: 1px solid #333333;
+      }
+      .content-area {
+        height: 65%;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- HTML：網頁的骨架與內容 -->
-  <div class="container">
-    <h1>[D.M.S] 核心伺服器</h1>
-    <p class="warning">⚠️ 警告：未授權人員存取將觸發實體清除程序。</p>
-    <p>組織宗旨：以異常獵殺異常，以深淵反噬深淵。</p>
+  <header>
+    <h1>D.M.S ARCHIVE // 異象殲滅處</h1>
+    <span class="status-tag">SECURE-TERMINAL</span>
+  </header>
 
-    <button onclick="unlockFile()">解鎖生物兵器 [DMS-001] 檔案</button>
+  <div class="layout-container">
+    
+    <!-- 左側：詳細檔案與故事展示 -->
+    <main class="content-area">
+      <div id="display-card" class="doc-card">
+        <!-- 內容由 JavaScript 動態載入 -->
+      </div>
+    </main>
 
-    <div id="secret-file">
-      <p style="color: #ff3333;">【機密檔案載入中...】</p>
-      <p><strong>實體代號：</strong>滅行者 (Eradicator-01)</p>
-      <p><strong>指定剋制對象：</strong>實體類 Euclid / Keter 級異常</p>
-      <p><strong>培育狀態：</strong>第三階段基因融合完成</p>
-    </div>
+    <!-- 右側：怪物與日誌清單 -->
+    <aside class="sidebar">
+      <div class="category-title">組織宣言與架構</div>
+      <ul>
+        <li class="active" onclick="showDoc('origin', this)">D.M.S 成立簡史</li>
+        <li onclick="showDoc('doctrine', this)">作戰綱領：以異制異</li>
+      </ul>
+
+      <div class="category-title">自製生物兵器</div>
+      <ul>
+        <li onclick="showDoc('dms01', this)">DMS-001「滅行者」</li>
+        <li onclick="showDoc('dms02', this)">DMS-002「擬態黑潮」</li>
+      </ul>
+
+      <div class="category-title">殲滅與作戰記錄</div>
+      <ul>
+        <li onclick="showDoc('op01', this)">作戰報告：代號【斷角】</li>
+        <li onclick="showDoc('op02', this)">神話級實體降解方案</li>
+      </ul>
+    </aside>
+
   </div>
 
-  <!-- JavaScript：負責點擊解鎖的互動邏輯 -->
   <script>
-    function unlockFile() {
-      const file = document.getElementById("secret-file");
-      if (file.style.display === "block") {
-        file.style.display = "none";
-      } else {
-        file.style.display = "block";
+    const database = {
+      origin: {
+        title: "D.M.S 成立簡史：終止無效收容",
+        meta: "DOCUMENT ID: DMS-DOC-001 | CLEARANCE: LEVEL-3",
+        content: `
+          <p>長久以來，主流收容體系耗費天文數字的資源建造收容所，但每一次收容失效都伴隨著不可逆的人員傷亡與現實侵蝕。</p>
+          <p><strong>D.M.S（Defensive Monster Synthesis）</strong> 成立於一個不可妥協的前提：<strong>「不可控的異常必須被消滅，而消滅它們的最佳工具，是受我們精確控制的異常。」</strong></p>
+          <p>我們不設牢房，只設獵殺編隊與重組實驗室。任何被捕獲的目標，其結構、能量與因果律特質都將轉化為下一代兵器的基底。</p>
+        `
+      },
+      doctrine: {
+        title: "作戰綱領：特化剋制與完全降解",
+        meta: "DOCUMENT ID: DMS-DOC-002 | CLEARANCE: LEVEL-4",
+        content: `
+          <p><strong>一、特化培育</strong><br>D.M.S 不追求全能生物。每種兵器僅針對單一或特定類型的異常弱點進行基因編程與概念對消設計。</p>
+          <p><strong>二、連鎖抹除</strong><br>擊潰目標肉體僅為第一階段。作戰單位必須徹底瓦解目標的分子結構或認知模因，杜絕再生與概念重組的可能。</p>
+          <p><strong>三、損耗處置</strong><br>所有自製兵器皆內建神經熔毀協議。一旦判定失控或完成任務，立即啟動中和程序。</p>
+        `
+      },
+      dms01: {
+        title: "DMS-001「滅行者」檔案",
+        meta: "ENTITY ID: DMS-001 | CLASSIFICATION: COMBAT-READY",
+        content: `
+          <p><strong>【設計用途】</strong><br>針對具備高物理防禦、高速再生能力之實體巨獸進行正面穿透與處決。</p>
+          <p><strong>【生理特性】</strong><br>骨骼由超密度生物晶體重組而成，表皮具備動能吸收特性。主要攻擊手段為前端神經溶質刺針。</p>
+          <p><strong>【處決機制】</strong><br>近身貫穿後注入特製反細胞酸，能干擾異常分子的重組鏈，在 30 秒內將大型實體化解為無害沉澱物。</p>
+        `
+      },
+      dms02: {
+        title: "DMS-002「擬態黑潮」檔案",
+        meta: "ENTITY ID: DMS-002 | CLASSIFICATION: ACTIVE-STANDBY",
+        content: `
+          <p><strong>【設計用途】</strong><br>針對精神污染、無固定形體或空間位移型異常的捕捉與隔絕消滅。</p>
+          <p><strong>【生理特性】</strong><br>無固定外觀的暗色流體化合物，具備吸收可見光、雷達波及模因信號之特性。</p>
+          <p><strong>【作戰機制】</strong><br>展開並包裹目標形成絕對真空暗室，切斷其與現實維度的資訊交換，藉由內部壓力逐層降解目標存在。</p>
+        `
+      },
+      op01: {
+        title: "作戰報告：代號【斷角】",
+        meta: "RECORD ID: LOG-202603-01 | TARGET: UNKNOWN-BEAST",
+        content: `
+          <p><strong>【目標概述】</strong> 出現於廢棄礦區的未編號實體，具備震波破壞力與極強防禦。</p>
+          <p><strong>【執行過程】</strong> 03:00 投放 DMS-001。目標發動首輪衝擊，DMS-001 抵禦動能後突進，精準刺入目標頸部中樞。</p>
+          <p><strong>【結果記錄】</strong> 目標於 03:12 徹底停止生命活動，組織於現場全數溶解完畢。DMS-001 回收成功，機體無不可逆損傷。</p>
+        `
+      },
+      op02: {
+        title: "神話級實體降解方案評估",
+        meta: "RECORD ID: LOG-202606-18 | DEPARTMENT: STRATEGY",
+        content: `
+          <p>傳統神話記載之概念型異獸（如饕餮等吞噬類生物）對常規物理打擊具備極高抗性。</p>
+          <p><strong>D.M.S 處置策略：</strong> 投放 DMS-002 作為擬態誘餌。利用目標之吞噬本能使其吞入反物質核心，自其體內核心引發概念崩解，達成零殘留殲滅。</p>
+        `
+      }
+    };
+
+    function showDoc(key, element) {
+      const item = database[key];
+      if (!item) return;
+
+      const display = document.getElementById('display-card');
+      display.innerHTML = `
+        <h2>${item.title}</h2>
+        <div class="doc-meta">${item.meta}</div>
+        <div class="doc-body">${item.content}</div>
+      `;
+
+      const listItems = document.querySelectorAll('.sidebar li');
+      listItems.forEach(li => li.classList.remove('active'));
+      if (element) {
+        element.classList.add('active');
       }
     }
-  </script>
 
+    // 初始化載入第一篇
+    showDoc('origin');
+  </script>
 </body>
 </html>
