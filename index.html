@@ -21,7 +21,7 @@
       overflow: hidden;
     }
 
-    /* 機密頂部狀態列 */
+    /* ── 頂部 Header ── */
     header {
       background-color: #181818;
       border-bottom: 1px solid #333333;
@@ -29,6 +29,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-shrink: 0;
     }
 
     header h1 {
@@ -36,6 +37,12 @@
       letter-spacing: 2px;
       color: #ffffff;
       font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .status-tag {
@@ -47,44 +54,111 @@
       letter-spacing: 1px;
     }
 
-    /* 左右雙欄佈局 */
+    /* 手機版目錄 toggle（桌機隱藏） */
+    .sidebar-toggle {
+      display: none;
+      background: none;
+      border: 1px solid #444;
+      color: #aaa;
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .sidebar-toggle:hover {
+      color: #fff;
+      border-color: #888;
+    }
+
+    /* ── 主佈局 ── */
     .layout-container {
       display: flex;
       flex: 1;
-      height: calc(100vh - 53px);
+      overflow: hidden;
     }
 
-    /* 左側：主檔案閱讀區 */
+    /* ── 左側：閱讀區 ── */
     .content-area {
       flex: 7;
       padding: 40px;
       overflow-y: auto;
       background-color: #121212;
       border-right: 1px solid #2a2a2a;
+      position: relative;
     }
 
+    /* 閱讀進度條 */
+    #progress-bar {
+      position: sticky;
+      top: -40px;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background-color: #666666;
+      transition: width 0.1s linear;
+      margin: -40px -40px 36px -40px;
+    }
+
+    /* 文件卡片（含淡入淡出） */
     .doc-card {
       max-width: 780px;
       margin: 0 auto;
       line-height: 1.8;
       color: #cccccc;
+      opacity: 1;
+      transition: opacity 0.16s ease;
+    }
+
+    .doc-card.fade-out {
+      opacity: 0;
     }
 
     .doc-card h2 {
       color: #ffffff;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 500;
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid #333333;
     }
 
+    /* Meta 資訊列 */
     .doc-meta {
-      font-size: 0.85rem;
-      color: #777777;
-      margin-bottom: 24px;
-      padding-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-size: 0.82rem;
+      color: #666666;
       font-family: monospace;
+    }
+
+    /* 機密等級 badge */
+    .clearance-badge {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 2px;
+      letter-spacing: 1px;
+      border: 1px solid;
+      font-weight: 600;
+    }
+
+    .clearance-3 { color: #ffd93d; border-color: #ffd93d55; background-color: #ffd93d0e; }
+    .clearance-4 { color: #ff6b6b; border-color: #ff6b6b55; background-color: #ff6b6b0e; }
+    .clearance-5 { color: #ff4444; border-color: #ff444455; background-color: #ff44440e; }
+
+    /* 機密遮蔽文字 */
+    .redact {
+      background-color: #333333;
+      color: transparent;
+      border-radius: 1px;
+      padding: 0 2px;
+      user-select: none;
+      letter-spacing: 2px;
     }
 
     .doc-body p {
@@ -95,27 +169,45 @@
       color: #ffffff;
     }
 
-    /* 右側：分類目錄選單 */
+    /* ── 右側：Sidebar ── */
     .sidebar {
       flex: 3;
       min-width: 260px;
       background-color: #161616;
-      padding: 24px 16px;
+      padding: 20px 14px;
       overflow-y: auto;
     }
 
+    /* 搜尋欄 */
+    .sidebar-search {
+      background-color: #1e1e1e;
+      border: 1px solid #333333;
+      border-radius: 3px;
+      color: #cccccc;
+      font-size: 0.82rem;
+      padding: 7px 10px;
+      width: 100%;
+      outline: none;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+      transition: border-color 0.15s;
+    }
+
+    .sidebar-search::placeholder { color: #555555; }
+    .sidebar-search:focus { border-color: #666666; }
+
     .category-title {
-      font-size: 0.75rem;
-      color: #666666;
+      font-size: 0.72rem;
+      color: #555555;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      padding-left: 8px;
+      margin-top: 18px;
+      margin-bottom: 8px;
+      padding-left: 10px;
       font-weight: 600;
     }
 
-    .category-title:first-child {
+    .sidebar-section:first-of-type .category-title {
       margin-top: 0;
     }
 
@@ -124,42 +216,63 @@
     }
 
     .sidebar li {
-      padding: 10px 12px;
-      margin-bottom: 4px;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 3px;
+      padding: 9px 10px 9px 12px;
+      margin-bottom: 3px;
+      border-left: 2px solid transparent;
+      border-radius: 0 3px 3px 0;
       cursor: pointer;
-      font-size: 0.88rem;
-      color: #aaaaaa;
-      transition: background 0.15s, color 0.15s;
+      font-size: 0.87rem;
+      color: #888888;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
 
     .sidebar li:hover {
-      background-color: #222222;
-      color: #ffffff;
+      background-color: #1e1e1e;
+      color: #cccccc;
+      border-left-color: #444444;
     }
 
     .sidebar li.active {
-      background-color: #242424;
+      background-color: #202020;
       color: #ffffff;
-      border: 1px solid #444444;
+      border-left-color: #888888;
       font-weight: 500;
     }
 
-    /* 行動裝置適配 */
+    /* 搜尋過濾隱藏 */
+    .sidebar-section.hidden { display: none; }
+    .sidebar li.hidden { display: none; }
+
+    /* ── 手機版 ── */
     @media (max-width: 768px) {
-      .layout-container {
-        flex-direction: column-reverse;
+      body { overflow: auto; height: auto; }
+
+      .sidebar-toggle { display: block; }
+
+      .layout-container { flex-direction: column; }
+
+      .content-area {
+        flex: none;
+        padding: 20px;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #2a2a2a;
       }
+
+      #progress-bar { display: none; }
+
       .sidebar {
         flex: none;
-        height: 35%;
-        border-top: 1px solid #333333;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 14px;
+        transition: max-height 0.3s ease, padding 0.3s ease;
       }
-      .content-area {
-        height: 65%;
-        padding: 20px;
+
+      .sidebar.open {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 20px 14px;
       }
     }
   </style>
@@ -168,73 +281,99 @@
 
   <header>
     <h1>D.M.S ARCHIVE // 異象殲滅處</h1>
-    <span class="status-tag">SECURE-TERMINAL</span>
+    <div class="header-right">
+      <button class="sidebar-toggle" id="sidebar-toggle">☰ 目錄</button>
+      <span class="status-tag">SECURE-TERMINAL</span>
+    </div>
   </header>
 
   <div class="layout-container">
-    
+
     <!-- 左側：詳細檔案與故事展示 -->
     <main class="content-area">
-      <div id="display-card" class="doc-card">
-        <!-- 內容由 JavaScript 動態載入 -->
-      </div>
+      <div id="progress-bar"></div>
+      <div id="display-card" class="doc-card"></div>
     </main>
 
     <!-- 右側：怪物與日誌清單 -->
     <aside class="sidebar">
-      <div class="category-title">組織宣言與架構</div>
-      <ul>
-        <li class="active" onclick="showDoc('origin', this)">D.M.S 成立簡史</li>
-        <li onclick="showDoc('doctrine', this)">作戰綱領：以異制異</li>
-      </ul>
 
-      <div class="category-title">自製生物兵器</div>
-      <ul>
-        <li onclick="showDoc('dms01', this)">DMS-001「滅行者」</li>
-        <li onclick="showDoc('dms02', this)">DMS-002「擬態黑潮」</li>
-      </ul>
+      <input
+        type="text"
+        id="sidebar-search"
+        class="sidebar-search"
+        placeholder="搜尋文件..."
+        autocomplete="off"
+      />
 
-      <div class="category-title">殲滅與作戰記錄</div>
-      <ul>
-        <li onclick="showDoc('op01', this)">作戰報告：代號【斷角】</li>
-        <li onclick="showDoc('op02', this)">神話級實體降解方案</li>
-      </ul>
+      <div class="sidebar-section">
+        <div class="category-title">組織宣言與架構</div>
+        <ul>
+          <li data-doc="origin">D.M.S 成立簡史</li>
+          <li data-doc="doctrine">作戰綱領：以異制異</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="category-title">自製生物兵器</div>
+        <ul>
+          <li data-doc="dms01">DMS-001「滅行者」</li>
+          <li data-doc="dms02">DMS-002「擬態黑潮」</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="category-title">殲滅與作戰記錄</div>
+        <ul>
+          <li data-doc="op01">作戰報告：代號【斷角】</li>
+          <li data-doc="op02">神話級實體降解方案</li>
+        </ul>
+      </div>
+
     </aside>
-
   </div>
 
   <script>
+    // ============================================================
+    // 資料庫 — 新增文章只需在這裡加新物件
+    // ============================================================
     const database = {
       origin: {
         title: "D.M.S 成立簡史：終止無效收容",
-        meta: "DOCUMENT ID: DMS-DOC-001 | CLEARANCE: LEVEL-3",
+        meta: "DOCUMENT ID: DMS-DOC-001",
+        clearance: 3,
         content: `
           <p>長久以來，主流收容體系耗費天文數字的資源建造收容所，但每一次收容失效都伴隨著不可逆的人員傷亡與現實侵蝕。</p>
           <p><strong>D.M.S（Defensive Monster Synthesis）</strong> 成立於一個不可妥協的前提：<strong>「不可控的異常必須被消滅，而消滅它們的最佳工具，是受我們精確控制的異常。」</strong></p>
           <p>我們不設牢房，只設獵殺編隊與重組實驗室。任何被捕獲的目標，其結構、能量與因果律特質都將轉化為下一代兵器的基底。</p>
+          <p>本組織現由 <span class="redact">████████</span> 秘密資助，作戰範圍覆蓋 <span class="redact">██</span> 個已知異常活躍區域。</p>
         `
       },
       doctrine: {
         title: "作戰綱領：特化剋制與完全降解",
-        meta: "DOCUMENT ID: DMS-DOC-002 | CLEARANCE: LEVEL-4",
+        meta: "DOCUMENT ID: DMS-DOC-002",
+        clearance: 4,
         content: `
           <p><strong>一、特化培育</strong><br>D.M.S 不追求全能生物。每種兵器僅針對單一或特定類型的異常弱點進行基因編程與概念對消設計。</p>
           <p><strong>二、連鎖抹除</strong><br>擊潰目標肉體僅為第一階段。作戰單位必須徹底瓦解目標的分子結構或認知模因，杜絕再生與概念重組的可能。</p>
-          <p><strong>三、損耗處置</strong><br>所有自製兵器皆內建神經熔毀協議。一旦判定失控或完成任務，立即啟動中和程序。</p>
+          <p><strong>三、損耗處置</strong><br>所有自製兵器皆內建神經熔毀協議。一旦判定失控或完成任務，立即啟動中和程序。此程序授權代碼：<span class="redact">████-████-C9</span>。</p>
         `
       },
       dms01: {
         title: "DMS-001「滅行者」檔案",
-        meta: "ENTITY ID: DMS-001 | CLASSIFICATION: COMBAT-READY",
+        meta: "ENTITY ID: DMS-001 | STATUS: COMBAT-READY",
+        clearance: 3,
         content: `
           <p><strong>【設計用途】</strong><br>針對具備高物理防禦、高速再生能力之實體巨獸進行正面穿透與處決。</p>
           <p><strong>【生理特性】</strong><br>骨骼由超密度生物晶體重組而成，表皮具備動能吸收特性。主要攻擊手段為前端神經溶質刺針。</p>
           <p><strong>【處決機制】</strong><br>近身貫穿後注入特製反細胞酸，能干擾異常分子的重組鏈，在 30 秒內將大型實體化解為無害沉澱物。</p>
+          <p><strong>【備註】</strong><br>第 <span class="redact">███</span> 號樣本於 2026/04 測試中出現自主性偏移行為，已依協議執行熔毀。</p>
         `
       },
       dms02: {
         title: "DMS-002「擬態黑潮」檔案",
-        meta: "ENTITY ID: DMS-002 | CLASSIFICATION: ACTIVE-STANDBY",
+        meta: "ENTITY ID: DMS-002 | STATUS: ACTIVE-STANDBY",
+        clearance: 4,
         content: `
           <p><strong>【設計用途】</strong><br>針對精神污染、無固定形體或空間位移型異常的捕捉與隔絕消滅。</p>
           <p><strong>【生理特性】</strong><br>無固定外觀的暗色流體化合物，具備吸收可見光、雷達波及模因信號之特性。</p>
@@ -244,42 +383,98 @@
       op01: {
         title: "作戰報告：代號【斷角】",
         meta: "RECORD ID: LOG-202603-01 | TARGET: UNKNOWN-BEAST",
+        clearance: 3,
         content: `
-          <p><strong>【目標概述】</strong> 出現於廢棄礦區的未編號實體，具備震波破壞力與極強防禦。</p>
-          <p><strong>【執行過程】</strong> 03:00 投放 DMS-001。目標發動首輪衝擊，DMS-001 抵禦動能後突進，精準刺入目標頸部中樞。</p>
-          <p><strong>【結果記錄】</strong> 目標於 03:12 徹底停止生命活動，組織於現場全數溶解完畢。DMS-001 回收成功，機體無不可逆損傷。</p>
+          <p><strong>【目標概述】</strong><br>出現於廢棄礦區的未編號實體，具備震波破壞力與極強防禦。</p>
+          <p><strong>【執行過程】</strong><br>03:00 投放 DMS-001。目標發動首輪衝擊，DMS-001 抵禦動能後突進，精準刺入目標頸部中樞。</p>
+          <p><strong>【結果記錄】</strong><br>目標於 03:12 徹底停止生命活動，組織於現場全數溶解完畢。DMS-001 回收成功，機體無不可逆損傷。</p>
+          <p><strong>【附件】</strong> 現場影像記錄存於 <span class="redact">███████</span> 伺服器，存取需 LEVEL-5 授權。</p>
         `
       },
       op02: {
         title: "神話級實體降解方案評估",
         meta: "RECORD ID: LOG-202606-18 | DEPARTMENT: STRATEGY",
+        clearance: 4,
         content: `
           <p>傳統神話記載之概念型異獸（如饕餮等吞噬類生物）對常規物理打擊具備極高抗性。</p>
-          <p><strong>D.M.S 處置策略：</strong> 投放 DMS-002 作為擬態誘餌。利用目標之吞噬本能使其吞入反物質核心，自其體內核心引發概念崩解，達成零殘留殲滅。</p>
+          <p><strong>D.M.S 處置策略：</strong>投放 DMS-002 作為擬態誘餌。利用目標之吞噬本能使其吞入反物質核心，自其體內核心引發概念崩解，達成零殘留殲滅。</p>
+          <p>預計損耗評估：DMS-002 樣本 <span class="redact">██</span> 號將於任務中自毀，無需回收程序。</p>
         `
       }
     };
 
+    // ============================================================
+    // 互動邏輯
+    // ============================================================
+
+    const progressBar = document.getElementById("progress-bar");
+    const contentArea = document.querySelector(".content-area");
+    let currentKey = null;
+
+    // 閱讀進度條
+    contentArea.addEventListener("scroll", () => {
+      const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+      const progress = scrollHeight > 0 ? (contentArea.scrollTop / scrollHeight) * 100 : 0;
+      progressBar.style.width = progress + "%";
+    });
+
+    // 切換文件（含淡入淡出）
     function showDoc(key, element) {
+      if (key === currentKey) return;
       const item = database[key];
       if (!item) return;
 
-      const display = document.getElementById('display-card');
-      display.innerHTML = `
-        <h2>${item.title}</h2>
-        <div class="doc-meta">${item.meta}</div>
-        <div class="doc-body">${item.content}</div>
-      `;
+      const card = document.getElementById("display-card");
+      card.classList.add("fade-out");
 
-      const listItems = document.querySelectorAll('.sidebar li');
-      listItems.forEach(li => li.classList.remove('active'));
-      if (element) {
-        element.classList.add('active');
-      }
+      setTimeout(() => {
+        currentKey = key;
+        card.innerHTML = `
+          <h2>${item.title}</h2>
+          <div class="doc-meta">
+            <span>${item.meta}</span>
+            <span class="clearance-badge clearance-${item.clearance}">CLEARANCE LEVEL-${item.clearance}</span>
+          </div>
+          <div class="doc-body">${item.content}</div>
+        `;
+        contentArea.scrollTop = 0;
+        progressBar.style.width = "0%";
+        card.classList.remove("fade-out");
+
+        document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+        if (element) element.classList.add("active");
+      }, 160);
     }
 
-    // 初始化載入第一篇
-    showDoc('origin');
+    // 事件委派：點擊 sidebar 條目
+    document.querySelector(".sidebar").addEventListener("click", (e) => {
+      const li = e.target.closest("li[data-doc]");
+      if (!li) return;
+      showDoc(li.dataset.doc, li);
+    });
+
+    // Sidebar 搜尋過濾
+    document.getElementById("sidebar-search").addEventListener("input", (e) => {
+      const query = e.target.value.trim().toLowerCase();
+      document.querySelectorAll(".sidebar-section").forEach(section => {
+        let hasVisible = false;
+        section.querySelectorAll("li[data-doc]").forEach(li => {
+          const match = !query || li.textContent.toLowerCase().includes(query);
+          li.classList.toggle("hidden", !match);
+          if (match) hasVisible = true;
+        });
+        section.classList.toggle("hidden", !hasVisible);
+      });
+    });
+
+    // 手機版 sidebar toggle
+    document.getElementById("sidebar-toggle").addEventListener("click", () => {
+      document.querySelector(".sidebar").classList.toggle("open");
+    });
+
+    // 初始化：載入第一篇並標記 active
+    const firstItem = document.querySelector("li[data-doc]");
+    showDoc(firstItem.dataset.doc, firstItem);
   </script>
 </body>
 </html>
